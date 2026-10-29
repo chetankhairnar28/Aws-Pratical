@@ -1,0 +1,214 @@
+# Automated Website Hosting Using Shell Scripting
+
+## Project Overview
+
+This project automates website hosting on a Linux server using Bash shell scripting. The script installs the Apache web server, downloads a website template, extracts the files, deploys the website, and restarts Apache automatically.
+
+The main goal of this project is to simplify website deployment by performing all the required steps using a single shell script.
+
+## Technologies Used
+
+- **Operating System:** Ubuntu Linux
+- **Scripting Language:** Bash Shell Scripting
+- **Web Server:** Apache2
+- **Download Tool:** curl
+- **Extraction Tool:** unzip
+- **Website Template:** Tooplate Orbital
+
+## Project Features
+
+- Automatic installation of Apache2.
+- Automatic installation of required packages.
+- Automatic downloading of website files.
+- Automatic extraction of ZIP files.
+- Automatic website deployment.
+- Automatic Apache service configuration.
+- Automatic restart of the web server.
+
+## Prerequisites
+
+Before running this project, ensure you have:
+
+- An Ubuntu or Debian Linux server.
+- Internet connectivity.
+- A user account with sudo privileges.
+- Port 80 open in your firewall or AWS EC2 security group if accessing the website remotely.
+
+## Shell Script
+
+Create a file named `setup.sh` and add the following code:
+
+```bash
+#!/bin/bash
+
+ZIP_URL="https://www.tooplate.com/zip-templates/2167_orbital.zip"
+
+# Update system packages
+sudo apt update
+
+# Install required packages
+sudo apt install -y apache2 unzip curl
+
+# Start and enable Apache
+sudo systemctl start apache2
+sudo systemctl enable apache2
+
+# Remove the default website directory
+sudo rm -rf /var/www/html
+
+# Download the website template
+sudo curl -fL "$ZIP_URL" -o /tmp/website.zip
+
+# Extract the website files
+sudo unzip -o /tmp/website.zip -d /var/www/
+
+# Move website files to Apache web root
+sudo mv /var/www/2167_orbital /var/www/html
+
+# Restart Apache
+sudo systemctl restart apache2
+
+echo "Website hosting completed successfully!"
+```
+
+**Note:** This script assumes the ZIP file extracts to `/var/www/2167_orbital`. Verify the extracted directory name if the template archive changes. The script also deletes `/var/www/html`, so back up any existing website files before running it.
+
+## How to Execute the Project
+
+### Step 1: Create the Script
+
+```bash
+nano setup.sh
+```
+
+Paste the shell script and save the file.
+
+### Step 2: Give Execute Permission
+
+```bash
+chmod +x setup.sh
+```
+
+### Step 3: Run the Script
+
+```bash
+./setup.sh
+```
+
+The script will automatically install Apache, download the website template, extract the files, and deploy the website.
+
+## How to Access the Website
+
+After the script finishes, find your server's public IP address.
+
+Open your browser and enter:
+
+```text
+http://YOUR_PUBLIC_IP
+```
+
+Replace `YOUR_PUBLIC_IP` with the public IP address of your Linux server.
+
+### For AWS EC2 Users
+
+If you are using an AWS EC2 instance:
+
+1. Open the AWS EC2 console.
+2. Select your EC2 instance.
+3. Open its associated security group.
+4. Add an inbound rule for HTTP.
+5. Set the protocol to TCP and the port to 80.
+6. Choose an appropriate source, such as `0.0.0.0/0` for a publicly accessible demo.
+7. Save the rule.
+
+Ensure your EC2 instance has the necessary network connectivity and routing.
+
+## Verify Apache Status
+
+Run the following command to check whether Apache is running:
+
+```bash
+sudo systemctl status apache2
+```
+
+To test the website locally:
+
+```bash
+curl -I http://localhost
+```
+
+If Apache is working correctly, you should receive an HTTP response.
+
+## Project Workflow
+
+1. Start the Linux server.
+2. Update the package index.
+3. Install Apache2, curl, and unzip.
+4. Start and enable the Apache service.
+5. Download the website template.
+6. Extract the ZIP archive.
+7. Move the website files to `/var/www/html`.
+8. Restart Apache.
+9. Access the website using the server's IP address.
+
+## Troubleshooting
+
+**Problem: Website is not opening**
+
+- Check whether Apache is running.
+- Verify that port 80 is allowed in the firewall or security group.
+- Confirm that the server has a public IP address and correct network routing.
+
+**Problem: ZIP file is not downloading**
+
+- Check your internet connection.
+- Verify that the website template URL is valid.
+
+**Problem: Directory not found**
+
+- Check the extracted folder name.
+- Update the `mv` command if the folder name is different.
+
+**Problem: Permission denied**
+
+- Verify that your user has sudo privileges.
+- Check the permissions of the website files.
+
+## Security Considerations
+
+- Review shell scripts before executing them.
+- Back up existing website files before replacing `/var/www/html`.
+- Never upload passwords, private keys, or cloud credentials to GitHub.
+- Use HTTPS and a valid TLS certificate for production websites.
+- Review the website template provider's license before redistributing its files.
+
+## Learning Outcomes
+
+Through this project, I learned:
+
+- Linux command-line operations.
+- Bash shell scripting.
+- Installing and managing Apache2.
+- Automating website deployment.
+- Downloading and extracting files using Linux commands.
+- Hosting a static website on a Linux server.
+- Basic AWS EC2 security group configuration.
+- Troubleshooting web-server connectivity.
+
+## Future Improvements
+
+- Configure HTTPS using an SSL/TLS certificate.
+- Add automatic error handling and logging.
+- Validate downloaded files before deployment.
+- Automate deployment through a CI/CD pipeline.
+- Configure a custom domain name.
+
+## Conclusion
+
+This project demonstrates how shell scripting can automate website hosting on a Linux server. By combining Bash, Apache2, curl, and unzip, the deployment process becomes faster and requires fewer manual steps.
+
+## Author
+
+**Chetan Dipak Khairnar**
+
+Project: Automated Website Hosting Using Shell Scripting
